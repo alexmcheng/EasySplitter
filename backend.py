@@ -4,10 +4,9 @@ from sqlalchemy import create_engine, Column, Integer, String, Date, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 
-
-
 Base = declarative_base()
 
+# define our table columns
 class Transaction(Base):
     __tablename__ = "transaction_test2"
 
@@ -20,22 +19,25 @@ class Transaction(Base):
     who_paid = Column('who_paid',Integer)
 
 
+# MySQL database login details, username, password, addresss
+with open('password.config', 'r') as myfile:
+    database_login = myfile.read()
 
-connection_string: str = "mysql+pymysql://acheng:Sqlpass1!@cubesolver.ci4spsc48dhk.us-west-1.rds.amazonaws.com:3306/EasySplitter"
+connection_string: str = 'mysql+pymysql://' + database_login
 
 engine = create_engine(connection_string, echo=True)
 Base.metadata.create_all(bind=engine)
 
-# Session = sessionmaker(engine)
-# session = Session()
-# trans = Transaction()
-# trans.id = 0
-# trans.restaurant = "Whole Foods"
-#
-# session.add(trans)
-# session.commit()
-#
-# session.close()
+Session = sessionmaker(engine)
+session = Session()
+trans = Transaction()
+trans.id = 0
+trans.restaurant = "Whole Foods"
+
+session.add(trans)
+session.commit()
+
+session.close()
 
 
 print("Hello World!")
