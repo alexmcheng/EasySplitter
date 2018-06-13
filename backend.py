@@ -40,37 +40,43 @@ Base.metadata.create_all(bind=engine)
 Session = sessionmaker(engine)
 session = Session()
 
-# Creating detail object
-detail = TransactionDetails()
-detail.restaurant = 'Joy Wok'
-detail.date = '2018-06-12'
-detail.notes = 'delicious'
-detail.who_paid = 0
-session.add(detail)
-session.flush()
 
-# Creating user 0 spending object
-trans0 = Transaction()
-trans0.spender_id = 0
-trans0.amt_spent = 1000
-trans0.detail_id = detail.id
 
-# Creating user 1 spending object
-trans1 = Transaction()
-trans1.spender_id = 1
-trans1.amt_spent = 1000
-trans1.detail_id = detail.id
-
-session.add(trans0)
-session.add(trans1)
-
-session.commit()
-session.close()
-
-# Creating default Flask route
+# Creating default Flask route.
 @app.route('/')
 def index():
     return "Home Page"
+
+# Adds a sample restaurant visit to the database.
+@app.route('/transaction')
+def add_transaction():
+    # Creating detail object
+    detail = TransactionDetails()
+    detail.restaurant = 'Joy Wok'
+    detail.date = '2018-06-12'
+    detail.notes = 'delicious'
+    detail.who_paid = 0
+    session.add(detail)
+    session.flush()
+
+    # Creating user 0 spending object
+    trans0 = Transaction()
+    trans0.spender_id = 0
+    trans0.amt_spent = 1000
+    trans0.detail_id = detail.id
+
+    # Creating user 1 spending object
+    trans1 = Transaction()
+    trans1.spender_id = 1
+    trans1.amt_spent = 1000
+    trans1.detail_id = detail.id
+
+    session.add(trans0)
+    session.add(trans1)
+
+    session.commit()
+    session.close()
+    return 'transaction added!'
 
 # Starts the Flask app
 if __name__ == '__main__':
