@@ -2,7 +2,9 @@
 
 # Using Flask framework and SQLAlchemy ORM for SQL querying.
 import login
-from flask import Flask
+from flask import Flask, render_template
+
+
 from sqlalchemy import create_engine, Column, Integer, String, Date, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
@@ -45,7 +47,15 @@ session = Session()
 # Creating default Flask route.
 @app.route('/')
 def index():
-    return "Home Page"
+    return render_template('home.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/add')
+def add():
+    return render_template('add.html')
 
 # Adds a sample restaurant visit to the database.
 @app.route('/transaction')
@@ -80,4 +90,4 @@ def add_transaction():
 
 # Starts the Flask app
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
