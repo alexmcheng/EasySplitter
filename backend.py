@@ -2,8 +2,10 @@
 
 # Using Flask framework and SQLAlchemy ORM for SQL querying.
 import login
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for, request
 
+from wtforms import Form, StringField, IntegerField, TextAreaField, validators, FloatField, RadioField
+from wtforms.validators import InputRequired
 
 from sqlalchemy import create_engine, Column, Integer, String, Date, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
@@ -32,6 +34,16 @@ class TransactionDetails(Base):
     notes = Column('notes', String(60))
     who_paid = Column('who_paid', Integer)
 
+# Form object for bill input on add.html
+class BillForm(Form):
+    user_0_spending = FloatField('Alex Spending', [InputRequired()])
+    user_1_spending = FloatField('Jenn Spending', [InputRequired()])
+    restaurant = StringField('Restaurant', [InputRequired()])
+    date = StringField('Date (YYYY-MM-DD)', [InputRequired()])
+    notes = StringField('Notes', [InputRequired()])
+    who_paid = RadioField('Who Paid?', choices=[(0,'Alex'), (0,'Jenn')])
+
+
 # MySQL database login details, username, password, and address from login.py.
 connection_string = 'mysql+pymysql://' + login.database_str
 
@@ -39,54 +51,58 @@ connection_string = 'mysql+pymysql://' + login.database_str
 engine = create_engine(connection_string, echo=True)
 Base.metadata.create_all(bind=engine)
 
-Session = sessionmaker(engine)
-session = Session()
+SQL_Session = sessionmaker(engine)
+sql_sess = SQL_Session()
 
 
 
 # Creating default Flask route.
 @app.route('/')
-def index():
+def home():
     return render_template('home.html')
 
 @app.route('/about')
 def about():
     return render_template('about.html')
 
-@app.route('/add')
-def add():
-    return render_template('add.html')
+@app.route('/addbill', methods = ['GET', 'POST'])
+def addbill():
+    form = BillForm(request.form)
+    print("add")
+    if request.method == 'POST':
+        print("inside POST AND VALIDAT")
+        detail = TransactionDetails()
+        detail.restaurant = form.restaurant.data
+        detail.date = form.date.data
+        detail.notes = form.notes.data
+        detail.who_paid = form.who_paid.data
+        sql_sess.add(detail)
+        sql_sess.flush()
 
-# Adds a sample restaurant visit to the database.
-@app.route('/transaction')
-def add_transaction():
-    # Creating detail object
-    detail = TransactionDetails()
-    detail.restaurant = 'Joy Wok'
-    detail.date = '2018-06-12'
-    detail.notes = 'delicious'
-    detail.who_paid = 0
-    session.add(detail)
-    session.flush()
+        # Creating user 0 spending object
+        trans0 = Transaction()
+        trans0.spender_id = 0
+        trans0.amt_spent = int(form.user_0_spending.data * 100)
+        trans0.detail_id = detail.id
 
-    # Creating user 0 spending object
-    trans0 = Transaction()
-    trans0.spender_id = 0
-    trans0.amt_spent = 1000
-    trans0.detail_id = detail.id
+        # Creating user 1 spending object
+        trans1 = Transaction()
+        trans1.spender_id = 1
+        trans1.amt_spent = int(form.user_1_spending.data * 100)
+        trans1.detail_id = detail.id
 
-    # Creating user 1 spending object
-    trans1 = Transaction()
-    trans1.spender_id = 1
-    trans1.amt_spent = 1000
-    trans1.detail_id = detail.id
+        sql_sess.add(trans0)
+        sql_sess.add(trans1)
 
-    session.add(trans0)
-    session.add(trans1)
+        sql_sess.commit()
+        sql_sess.close()
+        print("hello world!")
 
-    session.commit()
-    session.close()
-    return 'transaction added!'
+        return redirect(url_for('home'))
+
+    return render_template('add.html', form=form)
+
+
 
 # Starts the Flask app
 if __name__ == '__main__':
