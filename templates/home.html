@@ -4,10 +4,35 @@
 <div class="jumbotron text-center">
     <h1>Welcome to Easy Splitter</h1>
     <p class="lead"> Spending tracker for Alex and Jenn </p>
-    <ul>
-        {% for i in range(0,10) %}
-            <li class="list-group-item"> hello </li>
-        {% endfor %}
-    </ul>
+
+</div>
+
+<div class="container">
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a href="#alex" role="tab" data-toggle="tab">Alex</a>
+    </li>
+    <li>
+        <a href="#jenn" role="tab" data-toggle="tab">Jenn</a>
+    </li>
+    <li>
+        <a href="#data" role="tab" data-toggle="tab">Data</a>
+    </li>
+</ul>
+<div class="tab-content card">
+    <div id="alex" role="tabpanel" class="tab-pane fade in active">
+        <br/>
+        {% include 'test_paragraph.html' %}
+    </div>
+    <div id="jenn" role="tabpanel" class="tab-pane fade">
+        <br/>
+        {% include 'test_paragraph.html' %}
+    </div>
+    <div id="data" role="tabpanel" class="tab-pane fade">
+        <br/>
+        {% include 'test_paragraph.html' %}
+    </div>
+</div>
+
 </div>
 {% endblock %}
