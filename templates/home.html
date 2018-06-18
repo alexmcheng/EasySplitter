@@ -8,6 +8,11 @@
 </div>
 
 <div class="container">
+    <h3>{{spent_more}}</h3>
+    <br/>
+</div>
+
+<div class="container">
 <ul class="nav nav-tabs">
     <li class="active">
         <a href="#alex" role="tab" data-toggle="tab">Alex</a>
@@ -22,17 +27,21 @@
 <div class="tab-content card">
     <div id="alex" role="tabpanel" class="tab-pane fade in active">
         <br/>
-        {% include 'test_paragraph.html' %}
+        {% include 'display_bills_0.html' %}
     </div>
     <div id="jenn" role="tabpanel" class="tab-pane fade">
         <br/>
-        {% include 'test_paragraph.html' %}
+        {% include 'display_bills_1.html' %}
     </div>
     <div id="data" role="tabpanel" class="tab-pane fade">
         <br/>
-        {% include 'test_paragraph.html' %}
+        This is how much Alex spent: {{spending_list[0]/100}}
+        <!--{% include 'test_paragraph.html' %} -->
     </div>
 </div>
-
+    <br/>
+    <br/>
+    <br/>
+    <br/>
 </div>
 {% endblock %}
