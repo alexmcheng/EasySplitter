@@ -20,23 +20,21 @@
     <li>
         <a href="#jenn" role="tab" data-toggle="tab">Jenn</a>
     </li>
-    <li>
-        <a href="#data" role="tab" data-toggle="tab">Data</a>
-    </li>
 </ul>
 <div class="tab-content card">
     <div id="alex" role="tabpanel" class="tab-pane fade in active">
         <br/>
-        {% include 'display_bills_0.html' %}
+        Alex has spent {{two_weeks_spending_list[0]/100}} in the last two weeks
+        {% with bill_qry=bill_qry_list[0] %}
+        {% include 'display_bills.html' %}
+        {% endwith %}
     </div>
     <div id="jenn" role="tabpanel" class="tab-pane fade">
         <br/>
-        {% include 'display_bills_1.html' %}
-    </div>
-    <div id="data" role="tabpanel" class="tab-pane fade">
-        <br/>
-        This is how much Alex spent: {{spending_list[0]/100}}
-        <!--{% include 'test_paragraph.html' %} -->
+        Jenn has spent {{two_weeks_spending_list[1]/100}} in the last two weeks
+        {% with bill_qry=bill_qry_list[1] %}
+        {% include 'display_bills.html' %}
+        {% endwith %}
     </div>
 </div>
     <br/>

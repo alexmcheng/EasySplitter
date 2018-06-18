@@ -8,7 +8,7 @@
         <th>Date</th>
         <th>Notes</th>
     </tr>
-    {% for bill in bills_0_qry %}
+    {% for bill in bill_qry %}
     <tr>
         <th>{{bill.BillDetail.restaurant}}</th>
         <th>{{bill.BillSpending.amt_spent/100}}</th>

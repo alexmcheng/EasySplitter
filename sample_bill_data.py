@@ -40,6 +40,53 @@ def sample_bills():
             'restaurant': 'Pizza Kitchen',
             'notes': 'great mushrooms',
             'who_paid': 0
+        },
+        {
+            'spending_0': 4.21,
+            'spending_1': 5.89,
+            'date': '2018-06-08',
+            'restaurant': '7-11',
+            'notes': 'chips and drink',
+            'who_paid': 1
+        },
+        {
+            'spending_0': 17.80,
+            'spending_1': 20.31,
+            'date': '2018-06-10',
+            'restaurant': 'Orenchi Ramen',
+            'notes': 'wait was long',
+            'who_paid': 0
         }
     ]
     return bill_list
+
+
+# adds sample data to MySQL database
+def add_sample_bills(sql_sess):
+    from backend import BillDetail, BillSpending
+    for bill in sample_bills():
+        detail = BillDetail()
+        detail.restaurant = bill['restaurant']
+        detail.date = bill['date']
+        detail.notes = bill['notes']
+        detail.who_paid = bill['who_paid']
+        sql_sess.add(detail)
+        sql_sess.flush()
+
+        # Creating user 0 spending object
+        bill_0 = BillSpending()
+        bill_0.user_id = 0
+        bill_0.amt_spent = int(bill['spending_0'] * 100)
+        bill_0.detail = detail.id
+
+        # Creating user 1 spending object
+        bill_1 = BillSpending()
+        bill_1.user_id = 1
+        bill_1.amt_spent = int(bill['spending_1'] * 100)
+        bill_1.detail = detail.id
+
+        sql_sess.add(bill_0)
+        sql_sess.add(bill_1)
+
+    sql_sess.commit()
+    sql_sess.close()
